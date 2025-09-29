@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Video Catalog</title>
+  <style>
+    body { font-family: sans-serif; background:#111; color:#eee; }
+    .catalog { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
+    .show-card { background:#222; padding:1rem; border-radius:10px; cursor:pointer; text-align:center; }
+    a { color: inherit; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <h1>Shows</h1>
+  <div class="catalog">
+    <a href="show.html?name=show1"><div class="show-card">Show 1</div></a>
+    <a href="show.html?name=show2"><div class="show-card">Show 2</div></a>
+  </div>
+</body>
+</html>
