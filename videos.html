@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Episodes</title>
+  <style>
+    body { font-family: sans-serif; background:#111; color:#eee; }
+    .episode { margin: 1rem 0; padding:1rem; background:#222; border-radius:10px; }
+    a { color: inherit; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <h1 id="show-title"></h1>
+  <div id="episodes"></div>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const showName = urlParams.get("name");
+    document.getElementById("show-title").innerText = showName;
+
+    // Hardcode episodes list (or generate dynamically later)
+    const shows = {
+      show1: ["ep1.mp4", "ep2.mp4"],
+      show2: ["ep1.mp4", "ep2.mp4"]
+    };
+
+    const container = document.getElementById("episodes");
+    shows[showName].forEach(ep => {
+      const link = document.createElement("a");
+      link.href = `player.html?show=${showName}&ep=${ep}`;
+      link.innerHTML = `<div class="episode">${ep}</div>`;
+      container.appendChild(link);
+    });
+  </script>
+</body>
+</html>
