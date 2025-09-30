@@ -2,58 +2,131 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Mini Browser</title>
+  <title>Safe Mini Browser</title>
   <style>
     body { margin: 0; font-family: sans-serif; }
-    #top-bar { display: flex; padding: 5px; background: #eee; }
-    #top-bar input { flex: 1; padding: 5px; }
-    #top-bar button { margin-left: 5px; }
-    iframe { width: 100%; height: calc(100vh - 40px); border: none; }
+    #top-bar {
+      display: flex;
+      padding: 5px;
+      background: #222;
+      color: #fff;
+      align-items: center;
+    }
+    #top-bar input {
+      flex: 1;
+      padding: 5px;
+      border-radius: 3px;
+      border: none;
+    }
+    #top-bar button {
+      margin-left: 5px;
+      padding: 5px 10px;
+      border: none;
+      border-radius: 3px;
+      background: #444;
+      color: #fff;
+      cursor: pointer;
+    }
+    #tabs {
+      display: flex;
+      background: #333;
+      color: #fff;
+      padding: 5px;
+      overflow-x: auto;
+    }
+    #tabs div {
+      padding: 5px 10px;
+      margin-right: 5px;
+      background: #555;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+    #tabs .active { background: #888; }
+    iframe {
+      width: 100%;
+      height: calc(100vh - 80px);
+      border: none;
+    }
   </style>
 </head>
 <body>
+
   <div id="top-bar">
     <button onclick="goBack()">⬅</button>
     <button onclick="goForward()">➡</button>
     <button onclick="reload()">⟳</button>
-    <input id="url" placeholder="Enter URL of site that works in iframe...">
+    <input id="url" placeholder="Enter local file path (e.g., file:///C:/path/page.html)">
     <button onclick="go()">Go</button>
+    <button onclick="newTab()">+ Tab</button>
   </div>
-  <iframe id="webview" src="https://example.com"></iframe>
+
+  <div id="tabs"></div>
+  <iframe id="webview" src=""></iframe>
 
   <script>
     const iframe = document.getElementById('webview');
-    const historyStack = [];
-    let currentIndex = -1;
+    const tabsContainer = document.getElementById('tabs');
+    const historyStack = [[]]; // history per tab
+    let currentIndex = [ -1 ]; // current index per tab
+    let currentTab = 0;
+
+    function updateTabs() {
+      tabsContainer.innerHTML = '';
+      for (let i = 0; i < historyStack.length; i++) {
+        const tab = document.createElement('div');
+        tab.textContent = `Tab ${i+1}`;
+        tab.className = i === currentTab ? 'active' : '';
+        tab.onclick = () => switchTab(i);
+        tabsContainer.appendChild(tab);
+      }
+    }
+
+    function switchTab(i) {
+      currentTab = i;
+      const hist = historyStack[i];
+      const idx = currentIndex[i];
+      iframe.src = hist[idx] || '';
+      updateTabs();
+    }
+
+    function newTab() {
+      historyStack.push([]);
+      currentIndex.push(-1);
+      currentTab = historyStack.length -1;
+      iframe.src = '';
+      updateTabs();
+    }
 
     function go() {
       const urlInput = document.getElementById('url').value;
       if (!urlInput) return;
-      let url = urlInput.startsWith('http') ? urlInput : 'https://' + urlInput;
-
+      let url = urlInput.startsWith('file:///') ? urlInput : 'file:///' + urlInput;
       iframe.src = url;
-      historyStack.splice(currentIndex + 1);
-      historyStack.push(url);
-      currentIndex++;
+      const tabHist = historyStack[currentTab];
+      tabHist.splice(currentIndex[currentTab]+1);
+      tabHist.push(url);
+      currentIndex[currentTab]++;
     }
 
     function goBack() {
-      if (currentIndex > 0) {
-        currentIndex--;
-        iframe.src = historyStack[currentIndex];
+      if (currentIndex[currentTab] > 0) {
+        currentIndex[currentTab]--;
+        iframe.src = historyStack[currentTab][currentIndex[currentTab]];
       }
     }
 
     function goForward() {
-      if (currentIndex < historyStack.length - 1) {
-        currentIndex++;
-        iframe.src = historyStack[currentIndex];
+      if (currentIndex[currentTab] < historyStack[currentTab].length - 1) {
+        currentIndex[currentTab]++;
+        iframe.src = historyStack[currentTab][currentIndex[currentTab]];
       }
     }
 
     function reload() {
       iframe.src = iframe.src;
     }
+
+    updateTabs();
   </script>
 </body>
 </html>
