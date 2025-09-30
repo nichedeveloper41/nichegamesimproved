@@ -26,6 +26,11 @@
       background: linear-gradient(145deg, #555, #333);
       box-shadow: 2px 2px 4px #111, -2px -2px 4px #555;
     }
+
+    /* Position the proxy button so it doesn't overlap the Shows button */
+    .proxy-btn {
+      right: 120px; /* adjust this value if you want different spacing */
+    }
   </style>
 </head>
 <body>
@@ -33,6 +38,9 @@
 
   <!-- Shows button -->
   <a href="actualshows.html" class="shows-btn">Shows</a>
+
+  <!-- Proxy button (added) -->
+  <a href="proxy.html" class="shows-btn proxy-btn">Proxy</a>
 
   <div class="main-container">
     <header>
@@ -61,7 +69,7 @@
       </section>
 
       <section>
-        <h2>🆕 Newly Added</h2>
+        <h2>ALL GAMES</h2>
         <div class="game-grid" id="new">
 <a href="games/Cuphead.html" class="game-card">Cuphead</a>
           <a href="games/Supermarket 3D.html" class="game-card">Supermarket 3D</a>
@@ -156,12 +164,7 @@
         card.style.display = card.textContent.toLowerCase().includes(filter) ? '' : 'none';
       });
     });
-
-    // See All button
-    document.getElementById('seeAll').addEventListener('click', () => {
-      window.location.href = "all-games.html";
     });
   </script>
 </body>
 </html>
-
